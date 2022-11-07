@@ -7,10 +7,11 @@ edition = "2021"
 
 [dependencies]
 argon2 = "0.4"
-deno_bindgen = "0.5.1"
+wasm-bindgen = "0.2"
 serde = { version = "1", features = ["derive"] }
 rand_core = { version = "0.6", features = ["std"] }
+getrandom = { version = "0.2", features = ["js"] }
 
 [lib]
 name = "deno_argon2"
-crate-type = ["dylib"]
+crate-type = ["cdylib"]

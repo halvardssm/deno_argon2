@@ -1,4 +1,4 @@
-use deno_bindgen::deno_bindgen;
+use wasm_bindgen::prelude::*;
 
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
@@ -6,7 +6,7 @@ use argon2::{
     Version
 };
 
-#[deno_bindgen]
+#[wasm_bindgen]
 pub enum Algorithm {
     /// Optimizes against GPU cracking attacks but vulnerable to side-channels.
     ///
@@ -31,7 +31,7 @@ pub enum Algorithm {
     Argon2id = 2,
 }
 
-#[deno_bindgen]
+#[wasm_bindgen]
 pub struct Params {
     /// Memory size, expressed in kilobytes, between 1 and (2^32)-1.
     ///
@@ -52,8 +52,8 @@ pub struct Params {
     outputLength: Option<usize>,
 }
 
-#[deno_bindgen(non_blocking)]
-fn hash(password: &str,algo:Algorithm,params:Params) -> String {
+#[wasm_bindgen]
+pub fn hash(password: &str,algo:Algorithm,params:Params) -> String {
     let params=argon2::Params::new(params.memoryCost,params.timeCost,params.parallelismCost,params.outputLength).expect("bad argon2 parameters");
     let algorithm = match algo {
         Algorithm::Argon2d=>argon2::Algorithm::Argon2d,
@@ -69,8 +69,8 @@ fn hash(password: &str,algo:Algorithm,params:Params) -> String {
         .to_string()
 }
 
-#[deno_bindgen(non_blocking)]
-fn hash_default(password: &str) -> String {
+#[wasm_bindgen]
+pub fn hash_default(password: &str) -> String {
     let argon2 = Argon2::default();
     let salt = SaltString::generate(&mut OsRng);
     let password_bytes=password.as_bytes();
@@ -81,8 +81,8 @@ fn hash_default(password: &str) -> String {
 }
 
 
-#[deno_bindgen(non_blocking)]
-fn verify(password: &str, password_hash: &str) -> u8 {
+#[wasm_bindgen]
+pub fn verify(password: &str, password_hash: &str) -> u8 {
     let password_bytes=password.as_bytes();
     let parsed_hash = PasswordHash::new(&password_hash).expect("failed to parse hash");
     let success=Argon2::default()
