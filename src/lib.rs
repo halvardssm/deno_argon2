@@ -31,36 +31,50 @@ pub enum Algorithm {
     Argon2id = 2,
 }
 
+impl Default for Algorithm {
+    fn default() -> Algorithm {
+        Algorithm::Argon2id
+    }
+}
+
 #[wasm_bindgen]
 pub struct Params {
     /// Memory size, expressed in kilobytes, between 1 and (2^32)-1.
     ///
     /// Value is an integer in decimal (1 to 10 digits).
-    memoryCost: u32,
+    memory_cost: u32,
 
     /// Number of iterations, between 1 and (2^32)-1.
     ///
     /// Value is an integer in decimal (1 to 10 digits).
-    timeCost: u32,
+    time_cost: u32,
 
     /// Degree of parallelism, between 1 and 255.
     ///
     /// Value is an integer in decimal (1 to 3 digits).
-    parallelismCost: u32,
+    parallelism_cost: u32,
 
     /// Size of the output (in bytes).
-    outputLength: Option<usize>,
+    output_length: Option<usize>,
 }
 
 #[wasm_bindgen]
-pub fn hash(password: &str,algo:Algorithm,params:Params) -> String {
-    let params=argon2::Params::new(params.memoryCost,params.timeCost,params.parallelismCost,params.outputLength).expect("bad argon2 parameters");
-    let algorithm = match algo {
+pub fn hash(password: &str,algo:Option<Algorithm>,params:Option<Params>) -> String {
+    let algorithm = match algo.unwrap_or_default() {
         Algorithm::Argon2d=>argon2::Algorithm::Argon2d,
         Algorithm::Argon2i=>argon2::Algorithm::Argon2i,
         Algorithm::Argon2id=>argon2::Algorithm::Argon2id
     };
-    let argon2 = Argon2::new(algorithm,Version::V0x13,params);
+
+    let mut _params: argon2::Params;
+    if params.is_none() {
+        _params = argon2::Params::default();
+    } else {
+        let unwrapped_params = params.unwrap();
+        _params=argon2::Params::new(unwrapped_params.memory_cost,unwrapped_params.time_cost,unwrapped_params.parallelism_cost,unwrapped_params.output_length).expect("bad argon2 parameters");
+    }
+
+    let argon2 = Argon2::new(algorithm,Version::V0x13,_params);
     let salt = SaltString::generate(&mut OsRng);
     let password_bytes=password.as_bytes();
     argon2
@@ -68,18 +82,6 @@ pub fn hash(password: &str,algo:Algorithm,params:Params) -> String {
         .expect("hashing failed")
         .to_string()
 }
-
-#[wasm_bindgen]
-pub fn hash_default(password: &str) -> String {
-    let argon2 = Argon2::default();
-    let salt = SaltString::generate(&mut OsRng);
-    let password_bytes=password.as_bytes();
-    argon2
-        .hash_password(password_bytes, &salt)
-        .expect("hashing failed")
-        .to_string()
-}
-
 
 #[wasm_bindgen]
 pub fn verify(password: &str, password_hash: &str) -> u8 {
