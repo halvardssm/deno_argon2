@@ -8,5 +8,7 @@
   ],
   "module": "deno_argon2.js",
   "types": "deno_argon2.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./snippets/*"
+  ]
 }

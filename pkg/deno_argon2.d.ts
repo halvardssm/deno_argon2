@@ -22,14 +22,14 @@ export enum Algorithm {
 * Accesses the memory array in a password dependent order, reducing the
 * possibility of time–memory tradeoff (TMTO) attacks.
 */
-  Argon2d,
+  Argon2d = 0,
 /**
 * Optimized to resist side-channel attacks.
 *
 * Accesses the memory array in a password independent order, increasing the
 * possibility of time-memory tradeoff (TMTO) attacks.
 */
-  Argon2i,
+  Argon2i = 1,
 /**
 * Hybrid that mixes Argon2i and Argon2d passes (*default*).
 *
@@ -40,7 +40,7 @@ export enum Algorithm {
 * resistance as Argon2i, but overall provides the most well-rounded
 * approach to both classes of attacks.
 */
-  Argon2id,
+  Argon2id = 2,
 }
 /**
 */
@@ -81,4 +81,4 @@ export function initSync(module: SyncInitInput): InitOutput;
 *
 * @returns {Promise<InitOutput>}
 */
-export default function init (module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;
+export default function __wbg_init (module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;
