@@ -2,8 +2,7 @@ use wasm_bindgen::prelude::*;
 
 use argon2::{
     password_hash::{rand_core::OsRng, PasswordHash, PasswordHasher, PasswordVerifier, SaltString},
-    Argon2,
-    Version
+    Argon2, Version,
 };
 
 #[wasm_bindgen]
@@ -59,11 +58,11 @@ pub struct Params {
 }
 
 #[wasm_bindgen]
-pub fn hash(password: &str,algo:Option<Algorithm>,params:Option<Params>) -> String {
+pub fn hash(password: &str, algo: Option<Algorithm>, params: Option<Params>) -> String {
     let algorithm = match algo.unwrap_or_default() {
-        Algorithm::Argon2d=>argon2::Algorithm::Argon2d,
-        Algorithm::Argon2i=>argon2::Algorithm::Argon2i,
-        Algorithm::Argon2id=>argon2::Algorithm::Argon2id
+        Algorithm::Argon2d => argon2::Algorithm::Argon2d,
+        Algorithm::Argon2i => argon2::Algorithm::Argon2i,
+        Algorithm::Argon2id => argon2::Algorithm::Argon2id,
     };
 
     let mut _params: argon2::Params;
@@ -71,12 +70,18 @@ pub fn hash(password: &str,algo:Option<Algorithm>,params:Option<Params>) -> Stri
         _params = argon2::Params::default();
     } else {
         let unwrapped_params = params.unwrap();
-        _params=argon2::Params::new(unwrapped_params.memory_cost,unwrapped_params.time_cost,unwrapped_params.parallelism_cost,unwrapped_params.output_length).expect("bad argon2 parameters");
+        _params = argon2::Params::new(
+            unwrapped_params.memory_cost,
+            unwrapped_params.time_cost,
+            unwrapped_params.parallelism_cost,
+            unwrapped_params.output_length,
+        )
+        .expect("bad argon2 parameters");
     }
 
-    let argon2 = Argon2::new(algorithm,Version::V0x13,_params);
+    let argon2 = Argon2::new(algorithm, Version::V0x13, _params);
     let salt = SaltString::generate(&mut OsRng);
-    let password_bytes=password.as_bytes();
+    let password_bytes = password.as_bytes();
     argon2
         .hash_password(password_bytes, &salt)
         .expect("hashing failed")
@@ -85,14 +90,13 @@ pub fn hash(password: &str,algo:Option<Algorithm>,params:Option<Params>) -> Stri
 
 #[wasm_bindgen]
 pub fn verify(password: &str, password_hash: &str) -> u8 {
-    let password_bytes=password.as_bytes();
+    let password_bytes = password.as_bytes();
     let parsed_hash = PasswordHash::new(&password_hash).expect("failed to parse hash");
-    let success=Argon2::default()
+    let success = Argon2::default()
         .verify_password(password_bytes, &parsed_hash)
         .is_ok();
     match success {
-        true=>1,
-        false=>0
+        true => 1,
+        false => 0,
     }
 }
-
