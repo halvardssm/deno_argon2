@@ -9,6 +9,7 @@
   },
   "publish": {
     "include": [
+      "deno.json",
       "README.md",
       "mod.ts",
       "pkg/*"
