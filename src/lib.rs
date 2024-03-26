@@ -37,28 +37,28 @@ impl Default for Algorithm {
 }
 
 #[wasm_bindgen]
-pub struct Params {
+pub struct HashOptions {
     /// Memory size, expressed in kilobytes, between 1 and (2^32)-1.
     ///
     /// Value is an integer in decimal (1 to 10 digits).
-    memory_cost: u32,
+    pub memory_cost: u32,
 
     /// Number of iterations, between 1 and (2^32)-1.
     ///
     /// Value is an integer in decimal (1 to 10 digits).
-    time_cost: u32,
+    pub time_cost: u32,
 
     /// Degree of parallelism, between 1 and 255.
     ///
     /// Value is an integer in decimal (1 to 3 digits).
-    parallelism_cost: u32,
+    pub parallelism_cost: u32,
 
     /// Size of the output (in bytes).
-    output_length: Option<usize>,
+    pub output_length: Option<usize>,
 }
 
 #[wasm_bindgen]
-pub fn hash(password: &str, algo: Option<Algorithm>, params: Option<Params>) -> String {
+pub fn hash(password: &str, algo: Option<Algorithm>, params: Option<HashOptions>) -> String {
     let algorithm = match algo.unwrap_or_default() {
         Algorithm::Argon2d => argon2::Algorithm::Argon2d,
         Algorithm::Argon2i => argon2::Algorithm::Argon2i,

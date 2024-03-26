@@ -1,6 +1,5 @@
 [package]
-name = "deno_argon2"
-version = "0.1.0"
+name = "argon2"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
@@ -13,5 +12,5 @@ rand_core = { version = "0.6", features = ["std"] }
 getrandom = { version = "0.2", features = ["js"] }
 
 [lib]
-name = "deno_argon2"
+name = "argon2"
 crate-type = ["cdylib"]

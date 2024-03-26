@@ -1,11 +1,11 @@
 import { hash, verify } from "./mod.ts";
-import { assert } from "https://deno.land/std@0.154.0/testing/asserts.ts";
+import { assert } from "@std/assert";
 
 Deno.test({
   name: "Test hash default",
-  async fn() {
-    const hashedPassword = await hash("mypassword");
-    const result = await verify("mypassword", hashedPassword);
+  fn() {
+    const hashedPassword = hash("mypassword");
+    const result = verify("mypassword", hashedPassword);
 
     assert(result);
   },

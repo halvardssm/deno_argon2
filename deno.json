@@ -1,0 +1,20 @@
+{
+  "name": "@halvardm/argon2",
+  "version": "0.1.1",
+  "exports": "./mod.ts",
+  "tasks": {
+    "install-wasm-pack": "cargo install wasm-pack",
+    "build": "wasm-pack build --target deno --release && rm pkg/.gitignore pkg/README.md", 
+    "test": "deno task build && deno test -A"
+  },
+  "publish": {
+    "include": [
+      "README.md",
+      "mod.ts",
+      "pkg/*"
+    ]
+  },
+  "imports": {
+    "@std/assert": "jsr:@std/assert@^0.220.1"
+  }
+}
