@@ -2,11 +2,10 @@
 /* eslint-disable */
 /**
 * @param {string} password
-* @param {number | undefined} algo
-* @param {HashOptions | undefined} params
+* @param {number | undefined} algorithm
 * @returns {string}
 */
-export function hash(password: string, algo?: number, params?: HashOptions): string;
+export function hash(password: string, algorithm?: number): string;
 /**
 * @param {string} password
 * @param {string} password_hash
@@ -41,31 +40,4 @@ export enum Algorithm {
 * approach to both classes of attacks.
 */
   Argon2id = 2,
-}
-/**
-*/
-export class HashOptions {
-  free(): void;
-/**
-* Memory size, expressed in kilobytes, between 1 and (2^32)-1.
-*
-* Value is an integer in decimal (1 to 10 digits).
-*/
-  memory_cost: number;
-/**
-* Size of the output (in bytes).
-*/
-  output_length?: number;
-/**
-* Degree of parallelism, between 1 and 255.
-*
-* Value is an integer in decimal (1 to 3 digits).
-*/
-  parallelism_cost: number;
-/**
-* Number of iterations, between 1 and (2^32)-1.
-*
-* Value is an integer in decimal (1 to 10 digits).
-*/
-  time_cost: number;
 }

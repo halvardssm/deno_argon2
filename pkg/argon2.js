@@ -47,19 +47,6 @@ function addHeapObject(obj) {
     return idx;
 }
 
-let cachedInt32Memory0 = null;
-
-function getInt32Memory0() {
-    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
-        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
-    }
-    return cachedInt32Memory0;
-}
-
-function isLikeNone(x) {
-    return x === undefined || x === null;
-}
-
 let WASM_VECTOR_LEN = 0;
 
 const cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available') } } );
@@ -106,39 +93,39 @@ function passStringToWasm0(arg, malloc, realloc) {
     return ptr;
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
+function isLikeNone(x) {
+    return x === undefined || x === null;
+}
+
+let cachedInt32Memory0 = null;
+
+function getInt32Memory0() {
+    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
+        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
     }
-    return instance.ptr;
+    return cachedInt32Memory0;
 }
 /**
 * @param {string} password
-* @param {number | undefined} algo
-* @param {HashOptions | undefined} params
+* @param {number | undefined} algorithm
 * @returns {string}
 */
-export function hash(password, algo, params) {
-    let deferred3_0;
-    let deferred3_1;
+export function hash(password, algorithm) {
+    let deferred2_0;
+    let deferred2_1;
     try {
         const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
         const ptr0 = passStringToWasm0(password, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
-        let ptr1 = 0;
-        if (!isLikeNone(params)) {
-            _assertClass(params, HashOptions);
-            ptr1 = params.__destroy_into_raw();
-        }
-        wasm.hash(retptr, ptr0, len0, isLikeNone(algo) ? 3 : algo, ptr1);
+        wasm.hash(retptr, ptr0, len0, isLikeNone(algorithm) ? 3 : algorithm);
         var r0 = getInt32Memory0()[retptr / 4 + 0];
         var r1 = getInt32Memory0()[retptr / 4 + 1];
-        deferred3_0 = r0;
-        deferred3_1 = r1;
+        deferred2_0 = r0;
+        deferred2_1 = r1;
         return getStringFromWasm0(r0, r1);
     } finally {
         wasm.__wbindgen_add_to_stack_pointer(16);
-        wasm.__wbindgen_free(deferred3_0, deferred3_1);
+        wasm.__wbindgen_free(deferred2_0, deferred2_1);
     }
 }
 
@@ -191,101 +178,6 @@ Argon2i:1,"1":"Argon2i",
 * approach to both classes of attacks.
 */
 Argon2id:2,"2":"Argon2id", });
-/**
-*/
-export class HashOptions {
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_hashoptions_free(ptr);
-    }
-    /**
-    * Memory size, expressed in kilobytes, between 1 and (2^32)-1.
-    *
-    * Value is an integer in decimal (1 to 10 digits).
-    * @returns {number}
-    */
-    get memory_cost() {
-        const ret = wasm.__wbg_get_hashoptions_memory_cost(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-    * Memory size, expressed in kilobytes, between 1 and (2^32)-1.
-    *
-    * Value is an integer in decimal (1 to 10 digits).
-    * @param {number} arg0
-    */
-    set memory_cost(arg0) {
-        wasm.__wbg_set_hashoptions_memory_cost(this.__wbg_ptr, arg0);
-    }
-    /**
-    * Number of iterations, between 1 and (2^32)-1.
-    *
-    * Value is an integer in decimal (1 to 10 digits).
-    * @returns {number}
-    */
-    get time_cost() {
-        const ret = wasm.__wbg_get_hashoptions_time_cost(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-    * Number of iterations, between 1 and (2^32)-1.
-    *
-    * Value is an integer in decimal (1 to 10 digits).
-    * @param {number} arg0
-    */
-    set time_cost(arg0) {
-        wasm.__wbg_set_hashoptions_time_cost(this.__wbg_ptr, arg0);
-    }
-    /**
-    * Degree of parallelism, between 1 and 255.
-    *
-    * Value is an integer in decimal (1 to 3 digits).
-    * @returns {number}
-    */
-    get parallelism_cost() {
-        const ret = wasm.__wbg_get_hashoptions_parallelism_cost(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-    * Degree of parallelism, between 1 and 255.
-    *
-    * Value is an integer in decimal (1 to 3 digits).
-    * @param {number} arg0
-    */
-    set parallelism_cost(arg0) {
-        wasm.__wbg_set_hashoptions_parallelism_cost(this.__wbg_ptr, arg0);
-    }
-    /**
-    * Size of the output (in bytes).
-    * @returns {number | undefined}
-    */
-    get output_length() {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.__wbg_get_hashoptions_output_length(retptr, this.__wbg_ptr);
-            var r0 = getInt32Memory0()[retptr / 4 + 0];
-            var r1 = getInt32Memory0()[retptr / 4 + 1];
-            return r0 === 0 ? undefined : r1 >>> 0;
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
-    }
-    /**
-    * Size of the output (in bytes).
-    * @param {number | undefined} arg0
-    */
-    set output_length(arg0) {
-        wasm.__wbg_set_hashoptions_output_length(this.__wbg_ptr, !isLikeNone(arg0), isLikeNone(arg0) ? 0 : arg0);
-    }
-}
 
 const imports = {
     __wbindgen_placeholder__: {
