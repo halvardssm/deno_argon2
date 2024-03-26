@@ -6,6 +6,8 @@ use argon2::{
 };
 
 #[wasm_bindgen]
+#[derive(Copy, Clone)]
+#[derive(Debug)]
 pub enum Algorithm {
     /// Optimizes against GPU cracking attacks but vulnerable to side-channels.
     ///
@@ -37,49 +39,60 @@ impl Default for Algorithm {
 }
 
 #[wasm_bindgen]
+#[derive(Default)]
+#[derive(Debug)]
 pub struct HashOptions {
+    /// Argon2 alorithm to use, can be one of Argon2d, Argon2i, or Argon2id.
+    /// Default is Argon2id.
+    pub algorithm: Option<Algorithm>,
     /// Memory size, expressed in kilobytes, between 1 and (2^32)-1.
     ///
     /// Value is an integer in decimal (1 to 10 digits).
-    pub memory_cost: u32,
-
+    #[wasm_bindgen(js_name = memoryCost)]
+    pub memory_cost: Option<u32>,
+    
     /// Number of iterations, between 1 and (2^32)-1.
     ///
     /// Value is an integer in decimal (1 to 10 digits).
-    pub time_cost: u32,
-
+    #[wasm_bindgen(js_name = timeCost)]
+    pub time_cost: Option<u32>,
+    
     /// Degree of parallelism, between 1 and 255.
     ///
     /// Value is an integer in decimal (1 to 3 digits).
-    pub parallelism_cost: u32,
-
+    #[wasm_bindgen(js_name = parallelismCost)]
+    pub parallelism_cost: Option<u32>,
+    
     /// Size of the output (in bytes).
+    #[wasm_bindgen(js_name = outputLength)]
     pub output_length: Option<usize>,
 }
 
 #[wasm_bindgen]
-pub fn hash(password: &str, algo: Option<Algorithm>, params: Option<HashOptions>) -> String {
-    let algorithm = match algo.unwrap_or_default() {
+pub fn hash(password: &str, options: Option<HashOptions>) -> String {
+    let opts = options.unwrap_or_default();
+    println!("opts: {:?}", opts);
+    
+    let algorithm = match opts.algorithm.unwrap_or_default() {
         Algorithm::Argon2d => argon2::Algorithm::Argon2d,
         Algorithm::Argon2i => argon2::Algorithm::Argon2i,
         Algorithm::Argon2id => argon2::Algorithm::Argon2id,
     };
+    println!("algorithm: {:?}", algorithm);
+    
+    let default_params = argon2::Params::default();
+    println!("default_params: {:?}", default_params);
 
-    let mut _params: argon2::Params;
-    if params.is_none() {
-        _params = argon2::Params::default();
-    } else {
-        let unwrapped_params = params.unwrap();
-        _params = argon2::Params::new(
-            unwrapped_params.memory_cost,
-            unwrapped_params.time_cost,
-            unwrapped_params.parallelism_cost,
-            unwrapped_params.output_length,
-        )
-        .expect("bad argon2 parameters");
-    }
+    let params = argon2::Params::new(
+        opts.memory_cost.unwrap_or(default_params.m_cost()),
+        opts.time_cost.unwrap_or(default_params.t_cost()),
+        opts.parallelism_cost.unwrap_or(default_params.p_cost()),
+        Some(opts.output_length.unwrap_or(default_params.output_len().unwrap_or_default()))
+    ).expect("bad argon2 parameters");
 
-    let argon2 = Argon2::new(algorithm, Version::V0x13, _params);
+    println!("params: {:?}", params);
+
+    let argon2 = Argon2::new(algorithm, Version::V0x13, params);
     let salt = SaltString::generate(&mut OsRng);
     let password_bytes = password.as_bytes();
     argon2
