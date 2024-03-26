@@ -1,17 +1,18 @@
 # deno_argon2
 
+[![JSR](https://jsr.io/badges/@halvardm/argon2)](https://jsr.io/@halvardm/argon2)
+[![JSR Score](https://jsr.io/badges/@halvardm/argon2/score)](https://jsr.io/@halvardm/argon2)
+
 Uses [argon2](https://docs.rs/argon2/latest/argon2/) and compiles to WASM
 
 ### Example usage
-
-create a typescript file app.ts.
 
 ```ts
 import {
   hash,
   verify,
-} from "https://raw.githubusercontent.com/halvardssm/deno_argon2/0.1.0/mod.ts";
-import { assertEquals } from "https://deno.land/std@0.154.0/testing/asserts.ts";
+} from "jsr:@halvardm/argon2";
+import { assertEquals } from "jsr:@std/assert";
 
 const hash = await hash("mypassword");
 const result = await verify("mypassword", hash);

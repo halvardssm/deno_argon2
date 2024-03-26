@@ -3,6 +3,11 @@
   "version": "0.1.1",
   "exports": "./mod.ts",
   "tasks": {
+    "check": "deno task format:check && deno task lint:check && deno task type:check",
+    "lint:check": "deno lint",
+    "format:check": "deno fmt --check",
+    "type:check": "deno check mod.ts",
+    "doc:check": "deno doc --lint lib",
     "install-wasm-pack": "cargo install wasm-pack",
     "build": "wasm-pack build --target deno --release && rm pkg/.gitignore pkg/README.md", 
     "test": "deno task build && deno test -A"
